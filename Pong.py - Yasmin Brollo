@@ -1,0 +1,125 @@
+# Pong.py---Yasmin-Brollo
+
+import turtle
+import os
+
+wn = turtle.Screen()
+wn.title("Pong")
+wn.bgcolor("black")
+wn.setup(width=800, height=600)
+wn.tracer(0)
+
+# pontos
+score_a = 0
+score_b = 0
+
+# Jogador A
+jogador_a = turtle.Turtle()
+jogador_a.speed(0)
+jogador_a.shape("square")
+jogador_a.color("white")
+jogador_a.shapesize(stretch_wid=5 ,stretch_len=1)
+jogador_a.penup()
+jogador_a.goto(-350, 0)
+
+# Jogador B
+jogador_b = turtle.Turtle()
+jogador_b.speed(0)
+jogador_b.shape("square")
+jogador_b.color("white")
+jogador_b.shapesize(stretch_wid=5 ,stretch_len=1)
+jogador_b.penup()
+jogador_b.goto(350, 0)
+
+# Bola
+bola = turtle.Turtle()
+bola.speed(0)
+bola.shape("square")
+bola.color("white")
+bola.penup()
+bola.goto(0, 0)
+bola.dx = 2
+bola.dy = 2
+
+# Pen
+pen = turtle.Turtle()
+pen.speed(0)
+pen.shape("square")
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 260)
+pen.write("Jogador A: 0  Jogador B: 0", align="center", font=("Courier", 24, "normal"))
+
+# Funções
+def jogador_a_up():
+    y = jogador_a.ycor()
+    y += 20
+    jogador_a.sety(y)
+
+def jogador_a_down():
+    y = jogador_a.ycor()
+    y -= 20
+    jogador_a.sety(y)
+
+def jogador_b_up():
+    y = jogador_b.ycor()
+    y += 20
+    jogador_b.sety(y)
+
+def jogador_b_down():
+    y = jogador_b.ycor()
+    y -= 20
+    jogador_b.sety(y)
+
+# teclas de comando
+wn.listen()
+wn.onkeypress(jogador_a_up, "w")
+wn.onkeypress(jogador_a_down, "s")
+wn.onkeypress(jogador_b_up, "Up")
+wn.onkeypress(jogador_b_down, "Down")
+
+#  game loop
+while True:
+    wn.update()
+
+    # Movimento da bola
+    bola.setx(bola.xcor() + bola.dx)
+    bola.sety(bola.ycor() + bola.dy)
+
+    # Border checking
+
+    # Top and bottom
+    if bola.ycor() > 290:
+        bola.sety(290)
+        bola.dy *= -1
+        os.system("afplay bounce.wav&")
+
+    elif bola.ycor() < -290:
+        bola.sety(-290)
+        bola.dy *= -1
+        os.system("afplay bounce.wav&")
+
+    # Left and right
+    if bola.xcor() > 350:
+        score_a += 1
+        pen.clear()
+        pen.write("jogador A: {}  jogador B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+        bola.goto(0, 0)
+        bola.dx *= -1
+
+    elif bola.xcor() < -350:
+        score_b += 1
+        pen.clear()
+        pen.write("Jogador A: {}  Jogador B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+        bola.goto(0, 0)
+        bola.dx *= -1
+
+    # Paddle and ball collisions
+    if bola.xcor() < -340 and bola.ycor() < jogador_a.ycor() + 50 and bola.ycor() > jogador_a.ycor() - 50:
+        bola.dx *= -1
+        os.system("afplay bounce.wav&")
+
+    elif bola.xcor() > 340 and bola.ycor() < jogador_b.ycor() + 50 and bola.ycor() > jogador_b.ycor() - 50:
+        bola.dx *= -1
+        os.system("afplay bounce.wav&")
